@@ -16,21 +16,29 @@ class _PriceHomepageState extends State<PriceHomepage> {
   String price = "1 BTC = ? ${currenciesList[0]}";
   String priceOfETH = "1 ETH = ? ${currenciesList[0]}";
   String priceOfLTC = "1 LTC = ? ${currenciesList[0]}";
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchBTCPrices();
+    fetchETHPrices();
+    fetchLTCPrices();
+  }
 
   @override
   Widget build(BuildContext context) {
-    fetchBTCPrices();
     return Scaffold(
         appBar: AppBar(
-          title: const Text("😃 Coin Ticker"),
+          title: const Text("Crypto Tracker"),
           backgroundColor: Colors.lightBlue,
         ),
-        body: Column(
+        body: isLoading ? const Center(child: CircularProgressIndicator()) :
+        Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              //TODO 2: You'll need to able to pass the selectedCurrency, value and cryptoCurrency to the constructor of this CryptoCard Widget.
-              //TODO 3: You'll need to use a Column Widget to contain the three CryptoCards.
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -52,31 +60,46 @@ class _PriceHomepageState extends State<PriceHomepage> {
     );
   }
 
-  void fetchBTCPrices() async {
+  Future fetchBTCPrices() async {
+    // setState(() {
+    //   isLoading = true;
+    // });
     try {
       double rate = await fetchData(cryptoList[0],selectedCurrency);
       price = "1 BTC = ${rate.toStringAsFixed(3)} $selectedCurrency";
     }catch(e){
-      print(e);
+      throw(e.toString());
     }
+    setState(() {
+
+    });
+    // setState(() {
+    //   isLoading = false;
+    // });
   }
 
-  void fetchETHPrices() async {
+  Future fetchETHPrices() async {
     try {
       double rate = await fetchData(cryptoList[1],selectedCurrency);
       priceOfETH = "1 ETH = ${rate.toStringAsFixed(3)} $selectedCurrency";
     }catch(e){
-      print(e);
+      throw(e.toString());
     }
+    setState(() {
+
+    });
   }
 
-  void fetchLTCPrices() async {
+  Future fetchLTCPrices() async {
     try {
       double rate = await fetchData(cryptoList[2],selectedCurrency);
       priceOfLTC = "1 LTC = ${rate.toStringAsFixed(3)} $selectedCurrency";
     }catch(e){
-      print(e);
+      throw(e.toString());
     }
+    setState(() {
+
+    });
   }
 
   DropdownButton<String> androidDropdown(){
@@ -84,10 +107,13 @@ class _PriceHomepageState extends State<PriceHomepage> {
     return DropdownButton<String>(
       value: selectedCurrency,
       elevation: 16,
-      onChanged: (String? newValue) {
+      onChanged: (String? newValue) async {
         setState(() {
           selectedCurrency = newValue!;
         });
+        await fetchBTCPrices();
+        await fetchETHPrices();
+        await fetchLTCPrices();
       },
       items: currenciesList
           .map<DropdownMenuItem<String>>((String value) {
@@ -130,7 +156,7 @@ class _PriceHomepageState extends State<PriceHomepage> {
       setState(() {
         selectedCurrency = currenciesList[selectedItem];
         fetchBTCPrices();
-        print("$selectedCurrency -> $price");
+        // print("$selectedCurrency -> $price");
       });
     },
     children:
