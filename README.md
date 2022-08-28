@@ -1,2 +1,2 @@
 # Working Demo of the Application
-<img src="https://github.com/AdiAr11/crypto_tracker/blob/master/crypto_tracker_demo.gif" width="290" height="630" />
+<img src="https://github.com/AdiAr11/custom_tooltip_demo/blob/master/custom_tooltip_demo.gif" width="290" height="630" />
